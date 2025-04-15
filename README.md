@@ -7,3 +7,8 @@ Project ini mendeteksi apakah tomat dalam gambar segar atau busuk menggunakan ES
 - `utils/` : preprocessing dan pengiriman data
 - `esp32_test/` : tes pengambilan gambar
 - `app.py` : dashboard utama
+
+## Technologies
+- Python
+- AI
+- Machine Learning
