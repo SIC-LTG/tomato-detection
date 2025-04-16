@@ -12,3 +12,10 @@ Project ini mendeteksi apakah tomat dalam gambar segar atau busuk menggunakan ES
 - Python
 - AI
 - Machine Learning
+  
+# Our Team -SIC/Lutung Sopan
+
+1. Davicho Widyatmoko ( Tech Leader & IOT Developer )
+2. Rafi Putra Fauzi ( Backend Developer )
+3. Zidane Akmal ( ML Dev )
+4. Rutji Edra Kedohn ( UI Designer )
