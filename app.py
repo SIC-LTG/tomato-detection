@@ -1,25 +1,21 @@
 import streamlit as st
 import cv2
 import time
-import requests
 import numpy as np
 from datetime import datetime
 from utils.tomato_detector_v2 import predict_frame, save_to_csv, detect_tomato_area
 
-# Fungsi ambil frame dari ESP32-CAM
-def get_frame_from_esp32(camera_url):
-    try:
-        response = requests.get(camera_url, timeout=1)
-        img_array = np.asarray(bytearray(response.content), dtype=np.uint8)
-        frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        return frame
-    except Exception as e:
-        print(f"Gagal ambil frame: {e}")
+# Fungsi buka stream dari ESP32-CAM
+def get_stream_from_esp32(camera_url):
+    cap = cv2.VideoCapture(camera_url)
+    if not cap.isOpened():
+        st.error("❌ Tidak bisa membuka stream dari ESP32-CAM")
         return None
+    return cap
 
 # Streamlit app
-def run_streamlit_app(camera_url='http://192.168.150.176/capture', use_roi=True):
-    st.title("Tomato Freshness Detector -")
+def run_streamlit_app(camera_url='http://192.168.150.176:81/stream', use_roi=True):
+    st.title("Tomato Freshness Detector - Streaming Mode")
 
     st.sidebar.header("SIC-LUTUNG SOPAN")
     st.sidebar.subheader("1. Rafi Putra Fauzi")
@@ -32,20 +28,23 @@ def run_streamlit_app(camera_url='http://192.168.150.176/capture', use_roi=True)
     prediction_placeholder = st.empty()
     probability_placeholder = st.empty()
 
-    fps_limit = 15  # Max 10 frames per second
+    fps_limit = 10  # Batasi FPS agar ringan
     prev_time = 0
+
+    cap = get_stream_from_esp32(camera_url)
+    if cap is None:
+        return
 
     try:
         while True:
-            # Batas FPS
             current_time = time.time()
             if current_time - prev_time < 1.0 / fps_limit:
                 continue
             prev_time = current_time
 
-            frame = get_frame_from_esp32(camera_url)
-            if frame is None:
-                status_placeholder.error("❌ Gagal ambil gambar dari ESP32-CAM")
+            ret, frame = cap.read()
+            if not ret:
+                status_placeholder.error("❌ Gagal membaca frame dari ESP32-CAM")
                 continue
 
             # Prediksi dan deteksi
@@ -58,7 +57,7 @@ def run_streamlit_app(camera_url='http://192.168.150.176/capture', use_roi=True)
                 if label == "Tomat Sudah Membusuk":
                     cv2.putText(frame, "Busuk!", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-            # Update tampilan
+            # Update tampilan Streamlit
             image_placeholder.image(frame, caption=f"{label} ({prob:.2f})", channels="BGR", use_container_width=True)
             save_to_csv(timestamp, label, prob)
 
@@ -68,9 +67,12 @@ def run_streamlit_app(camera_url='http://192.168.150.176/capture', use_roi=True)
 
     except Exception as e:
         st.error(f"⚠️ Terjadi kesalahan: {e}")
+    finally:
+        cap.release()
 
 if __name__ == "__main__":
-    run_streamlit_app(camera_url='http://192.168.150.176/capture')
+    run_streamlit_app(camera_url='http://192.168.150.176:81/stream')  # Ganti IP sesuai ESP32-CAM kamu
+
 
 #MENGGUNAKAN WEBCAM LAPTOP 
 
@@ -109,7 +111,6 @@ if __name__ == "__main__":
 #                 status_placeholder.error("Error: Failed to capture image")
 #                 time.sleep(1)
 #                 continue
-
 #             # Prediksi dan deteksi area tomat
 #             label, color, prob, cx, cy, cs = predict_frame(frame, use_roi=use_roi)
 #             tomato_boxes = detect_tomato_area(frame)
