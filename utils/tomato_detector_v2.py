@@ -9,11 +9,11 @@ import requests
 # MENGGUNAKAN ESP32 CAM
 
 # Load model
-model = load_model(r'.\model\tomato_fresh_detector(Jupiter)V2.h5')
+model = load_model('./model/tomato_fresh_detector(Jupiter)V2.h5')
 target_size = (150, 150)
 
 # CSV log
-log_filename = r'.\model\TomatoFreshDetector_Hystory.csv'
+log_filename = './model/TomatoFreshDetector_Hystory.csv'
 with open(log_filename, mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Timestamp', 'Prediction', 'Probability'])
