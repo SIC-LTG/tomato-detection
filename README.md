@@ -20,4 +20,4 @@ Project ini mendeteksi apakah tomat dalam gambar segar atau busuk menggunakan ES
 1. Davicho Widyatmoko ( Tech Leader & IOT Developer )
 2. Rafi Putra Fauzi ( Backend Developer )
 3. Zidane Akmal ( ML Developer )
-4. Rutji Edra Kedohn ( UI Designer )
+4. Rutji Edra Kedoh ( UI Designer )
