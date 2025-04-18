@@ -6,3 +6,5 @@ requests
 tensorflow
 keras
 numpy
+
+streamlit
