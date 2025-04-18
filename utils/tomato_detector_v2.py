@@ -9,7 +9,7 @@ import requests
 # MENGGUNAKAN ESP32 CAM
 
 # Load model
-model = load_model(r'model\tomato_fresh_detector(Jupiter)V2.h5')
+model = load_model(r'.\model\tomato_fresh_detector(Jupiter)V2.h5')
 target_size = (150, 150)
 
 # CSV log
